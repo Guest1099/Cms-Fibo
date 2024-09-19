@@ -103,7 +103,8 @@ namespace Application.Services
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:JwtExpireDays"]));
+            //var expires = DateTime.Now.AddHours(Convert.ToDouble(_configuration["Jwt:JwtExpireHours"]));
+            var expires = DateTime.Now.AddHours(24);
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
@@ -129,7 +130,8 @@ namespace Application.Services
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:JwtExpireDays"]));
+            //var expires = DateTime.Now.AddHours(Convert.ToDouble(_configuration["Jwt:JwtExpireHours"]));
+            var expires = DateTime.Now.AddHours(24);
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],

@@ -34,7 +34,7 @@ namespace WebApplication1.Controllers
 
 
 
-        [Authorize(Roles = "Administrator")]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskResult<ApplicationRole>>> GetRole(string id)
         {

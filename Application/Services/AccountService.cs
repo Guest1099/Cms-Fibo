@@ -144,6 +144,7 @@ namespace Application.Services
 
 
 
+        // Logowanie wyłącznie dla administratora systemu
         public async Task<TaskResult<LoginViewModel>> Login(LoginViewModel model)
         {
             var taskResult = new TaskResult<LoginViewModel>() { Success = true, Model = new LoginViewModel(), Message = "" };
@@ -169,24 +170,21 @@ namespace Application.Services
                             {
                                 taskResult.Success = true;
 
-                                DateTime expirationTimeToken = DateTime.Now.AddSeconds(10);
-                                DateTime expirationTimeNewToken = expirationTimeToken.AddSeconds(10);
+                                DateTime expirationTimeToken = DateTime.Now.AddHours(24);
+                                DateTime expirationTimeNewToken = expirationTimeToken.AddHours(5);
 
                                 taskResult.Model = new LoginViewModel()
                                 {
                                     Email = user.Email,
                                     Token = _userSupportService.GenerateJwtToken(user, roleName),
-                                    NewToken = _userSupportService.GenerateJwtToken(user, roleName),
-                                    ExpirationTimeToken = expirationTimeToken.ToString (),
-                                    ExpirationTimeNewToken = expirationTimeNewToken.ToString (),
+                                    NewToken = _userSupportService.GenerateJwtNewToken(model.Email, roleName),
+                                    ExpirationTimeToken = expirationTimeToken.ToString(), // czas wylogowania po wygaśnięciu tokena
+                                    ExpirationTimeNewToken = expirationTimeNewToken.ToString(),
                                     Role = roleName,
-                                    DataZalogowania = DateTime.Now.ToString(),
-                                    //DataWylogowania = DateTime.Now.AddHours(24).ToString(),
-                                    DataWylogowania = DateTime.Now.AddSeconds(10).ToString() // to jest to samo co ExpirationTimeToken, czyli czas wylogowania po wygaśnięciu tokena
                                 };
 
 
-/*
+
                                 // mówi o tym, kiedyu żytkownik się zalogował 
                                 rejestratorLogowaniaId = Guid.NewGuid().ToString();
                                 RejestratorLogowania rejestratorLogowania = new RejestratorLogowania()
@@ -199,7 +197,7 @@ namespace Application.Services
                                 };
                                 _context.RejestratorLogowania.Add(rejestratorLogowania);
                                 await _context.SaveChangesAsync();
-*/
+
 
                             }
                             else
@@ -231,67 +229,7 @@ namespace Application.Services
             return taskResult;
         }
 
-
-        /*
-                public async Task<TaskResult<LoginViewModel>> Login(LoginViewModel model)
-                {
-                    var taskResult = new TaskResult<LoginViewModel>() { Success = true, Model = new LoginViewModel(), Message = "" };
-
-                    try
-                    {
-                        var user = await _userManager.FindByEmailAsync(model.Email);
-
-                        if (user != null)
-                        {
-                            var userRoles = await _userManager.GetRolesAsync(user);
-                            for (var i = 0; i < userRoles.Count; i++)
-                            {
-                                string roleName = userRoles[i];
-                                if (roleName == "Administrator")
-                                {
-                                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: true);
-                                    if (result.Succeeded)
-                                    {
-                                        // Generowanie JWT i Refresh Token
-                                        var token = _userSupportService.GenerateJwtToken(user, roleName);
-                                        var refreshToken = _userSupportService.GenerateRefreshToken();
-
-
-                                        taskResult.Model = new LoginViewModel()
-                                        {
-                                            Email = user.Email,
-                                            Token = token,
-                                            RefreshToken = refreshToken,
-                                            Role = roleName,
-                                            DataZalogowania = DateTime.Now.ToString(),
-                                            DataWylogowania = DateTime.Now.AddHours(24).ToString()
-                                        };
-                                    }
-                                    else
-                                    {
-                                        taskResult.Success = false;
-                                        taskResult.Message = "Błędny login lub hasło";
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            taskResult.Success = false;
-                            taskResult.Message = "Użytkownik nie istnieje";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        taskResult.Success = false;
-                        taskResult.Message = ex.Message;
-                    }
-
-                    return taskResult;
-                }
-        */
-
+         
 
 
         public Task<TaskResult<string>> GenerateNewToken (TokenViewModel model)
@@ -664,39 +602,6 @@ namespace Application.Services
 
 
          
-
-
-        /// <summary>
-        /// Pobiera wszystkie role danego użytkownika
-        /// </summary>
-        public async Task<TaskResult<List<string>>> GetUserRoles(string email)
-        {
-            var taskResult = new TaskResult<List<string>>() { Success = true, Model = new List<string>(), Message = "" };
-
-            try
-            {
-                ApplicationUser user = await _userManager.FindByEmailAsync(email);
-                if (user != null)
-                {
-                    var userRoles = (await _userManager.GetRolesAsync(user)).ToList();
-
-                    taskResult.Success = true;
-                    taskResult.Model = userRoles;
-                }
-                else
-                {
-                    taskResult.Success = false;
-                    taskResult.Message = "User was null";
-                }
-            }
-            catch (Exception ex)
-            {
-                taskResult.Success = false;
-                taskResult.Message = ex.Message;
-            }
-            return taskResult;
-        }
-
 
 
 

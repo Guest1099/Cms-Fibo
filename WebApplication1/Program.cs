@@ -58,8 +58,7 @@ builder.Services.AddAuthentication(o =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = issuer,
             ValidAudience = audience,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ClockSkew = TimeSpan.FromSeconds(10)
+            IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });
 
@@ -121,7 +120,7 @@ app.UseAuthorization();
 
 app.UseCors(options =>
 {
-    options.WithOrigins("http://localhost:10003")
+    options.WithOrigins("http://localhost:10031")
     .AllowAnyMethod()
     .AllowAnyHeader();
 });

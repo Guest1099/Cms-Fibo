@@ -109,7 +109,7 @@ namespace WebApplication1.Controllers
 
         [Authorize(Roles = "Administrator")]
         [HttpPost("changePassword")]
-        public async Task<ActionResult<TaskResult<ChangePasswordViewModel>>> ChangeEmail(ChangePasswordViewModel model)
+        public async Task<ActionResult<TaskResult<ChangePasswordViewModel>>> ChangePassword(ChangePasswordViewModel model)
         {
             try
             {
@@ -140,22 +140,6 @@ namespace WebApplication1.Controllers
             }
         }
 
-
-
-        [Authorize(Roles = "Administrator")]
-        [HttpGet("getUserRoles/{email}")]
-        public async Task<ActionResult<TaskResult<List<string>>>> GetUserRoles(string email)
-        {
-            try
-            {
-                var taskResult = await _accountService.GetUserRoles(email);
-                return Ok(taskResult);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
 
 
 

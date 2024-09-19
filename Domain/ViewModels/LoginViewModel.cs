@@ -10,7 +10,7 @@
         public string? ExpirationTimeNewToken { get; set; }
 
         public string? Role { get; set; }
-        public string? DataZalogowania { get; set; }
-        public string? DataWylogowania { get; set; }
+        //public string? DataZalogowania { get; set; }
+        //public string? DataWylogowania { get; set; }
     }
 }
